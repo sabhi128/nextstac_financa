@@ -5,7 +5,6 @@ import { clsx } from 'clsx';
 
 const PurchasingHeader = () => {
     const navItems = [
-        { label: 'Overview', path: '/purchasing', icon: ShoppingCart, exact: true },
         { label: 'Suppliers', path: '/purchasing/suppliers', icon: Truck },
         { label: 'Orders', path: '/purchasing/orders', icon: FileText },
         { label: 'Bills', path: '/purchasing/bills', icon: ScrollText },
