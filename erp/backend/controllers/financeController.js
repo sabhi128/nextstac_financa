@@ -1,5 +1,69 @@
 import db from '../db.js';
 import { v4 as uuidv4 } from 'uuid';
+import * as xlsx from 'xlsx';
+
+export const uploadFinanceData = (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    try {
+        const workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+        const sheetName = workbook.SheetNames[0]; // Assume data is in first sheet
+        const data = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+        if (!data || data.length === 0) {
+            return res.status(400).json({ error: 'Excel file is empty' });
+        }
+
+        // Assume columns: Description, Amount, Type (Income/Expense), date (optional)
+        // Mapping 'Type' to 'reference' column since 'type' doesn't exist in schema.
+        const stmt = db.prepare(`INSERT INTO transactions (id, description, amount, reference, date) VALUES (?, ?, ?, ?, ?)`);
+
+        let count = 0;
+        db.serialize(() => {
+            db.run("BEGIN TRANSACTION");
+            // Fuzzy match helper
+            const getValue = (row, ...keys) => {
+                const rowKeys = Object.keys(row);
+                for (const key of keys) {
+                    const match = rowKeys.find(k => k.trim().toLowerCase() === key.toLowerCase());
+                    if (match) return row[match];
+                }
+                return undefined;
+            };
+
+            data.forEach(row => {
+                const id = uuidv4();
+                const description = getValue(row, 'Description', 'desc', 'Narration') || 'Imported Transaction';
+                const amount = parseFloat(getValue(row, 'Amount', 'amt', 'value', 'total') || 0);
+                const type = getValue(row, 'Type', 'category', 'ref') || 'Expense';
+                const dateRaw = getValue(row, 'Date', 'dt', 'time');
+                const date = dateRaw ? new Date(dateRaw).toISOString() : new Date().toISOString();
+
+                stmt.run(id, description, amount, type, date); // id, desc, amount, reference (type), date
+                count++;
+            });
+            db.run("COMMIT");
+            stmt.finalize();
+        });
+
+        res.json({ message: `Successfully imported ${count} transactions`, data });
+
+    } catch (error) {
+        console.error('Upload Error:', error);
+        res.status(500).json({ error: 'Failed to process Excel file' });
+    }
+};
+
+export const getTransactions = (req, res) => {
+    // Basic query, can be expanded with filters
+    const sql = `SELECT * FROM transactions ORDER BY date DESC`;
+    db.all(sql, [], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+};
 
 // --- Invoices ---
 // --- Invoices ---

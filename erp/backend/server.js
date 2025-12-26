@@ -7,6 +7,7 @@ import financeRoutes from './routes/financeRoutes.js';
 import inventoryRoutes from './routes/inventoryRoutes.js';
 import crmRoutes from './routes/crmRoutes.js';
 import purchasingRoutes from './routes/purchasingRoutes.js';
+import salesRoutes from './routes/salesRoutes.js';
 import systemRoutes from './routes/systemRoutes.js';
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.use('/api/hr', hrRoutes);
 app.use('/api/finance', financeRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/crm', crmRoutes);
+app.use('/api/sales', salesRoutes);
 app.use('/api/purchasing', purchasingRoutes); // Vendors
 app.use('/api/system', systemRoutes);         // Logs, Profile
 
