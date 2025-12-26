@@ -2,6 +2,8 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { mockDataService } from '../../../services/mockDataService';
 import { Check, X, Clock, Calendar } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 export default function PendingLeaveWidget() {
     const queryClient = useQueryClient();
@@ -48,9 +50,9 @@ export default function PendingLeaveWidget() {
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="font-semibold text-slate-900 text-sm truncate">{request.employeeName}</span>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100 dark:border-transparent">
+                            <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 border-indigo-100 font-medium">
                                 {request.type}
-                            </span>
+                            </Badge>
                         </div>
                         <p className="text-xs text-slate-600 line-clamp-1 mb-1.5">{request.reason}</p>
                         <div className="flex items-center gap-3 text-xs text-slate-400">
@@ -66,22 +68,26 @@ export default function PendingLeaveWidget() {
                     </div>
 
                     <div className="flex gap-2 flex-shrink-0">
-                        <button
+                        <Button
                             onClick={() => handleAction(request.id, 'Rejected')}
                             disabled={updateStatusMutation.isPending}
-                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-slate-400 hover:text-red-600 hover:bg-red-50"
                             title="Reject"
                         >
                             <X className="w-4 h-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={() => handleAction(request.id, 'Approved')}
                             disabled={updateStatusMutation.isPending}
-                            className="p-2 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700 rounded-lg transition-colors shadow-sm disabled:opacity-50"
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:text-indigo-700"
                             title="Approve"
                         >
                             <Check className="w-4 h-4" />
-                        </button>
+                        </Button>
                     </div>
                 </div>
             ))}

@@ -1,44 +1,87 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-html {
-  font-size: 13px;
-  /* Global scale down: 1rem = 13px (was 16px) */
-  scroll-behavior: smooth;
+@theme {
+  --font-sans: "Inter", sans-serif;
 }
 
-body {
-  background-color: #F8FAFC;
-  /* Slate 50 */
-  color: #0F172A;
-  /* Slate 900 */
-  font-family: 'Inter', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* --- 1. SHADCN COLORS (Variables) --- */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+
+  --radius: 0.5rem;
 }
 
-/* Global Density Overrides */
-@layer utilities {
-  .btn {
-    @apply h-8 px-3 text-xs;
-    /* Force smaller standard buttons */
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+}
+
+/* --- 2. BASE STYLES (Without Crashing @apply) --- */
+@layer base {
+  * {
+    /* @apply hata kar direct CSS use kar rahe hain taake error na aye */
+    border-color: hsl(var(--border));
+    border-style: solid;
+    border-width: 0;
   }
 
-  .input {
-    @apply h-8 text-xs;
-    /* Force smaller inputs */
+  html {
+    font-family: 'Inter', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    /* Premium Grey Background */
+    background-color: #F8FAFC;
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Tighten standard HTML tables if they don't use utility classes */
-/* Tighten standard HTML tables if they don't use utility classes */
-td,
-th {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-/* Premium Scrollbar */
+/* --- 3. CUSTOM SCROLLBAR & GLASS EFFECT --- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -50,92 +93,18 @@ th {
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 4px;
+  border-radius: 9999px;
+  border: 2px solid #F8FAFC;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Premium Selection */
-::selection {
-  background: rgba(79, 70, 229, 0.2);
-  /* Indigo 500 alpha */
-  color: #312e81;
-  /* Indigo 900 */
-}
-
-/* Glass Utilities */
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.glass-dark {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Premium Table Styles */
-.table-premium {
-  width: 100%;
-  border-collapse: separate;
-  /* Allows border-radius on rows/cells */
-  border-spacing: 0;
-}
-
-.table-premium thead tr {
-  background-color: #f8fafc;
-}
-
-.table-premium thead th {
-  border-bottom: 2px solid #e2e8f0;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #64748b;
-  padding: 1rem 1.5rem;
-  text-align: left;
-}
-
-.table-premium tbody tr {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.table-premium tbody tr:hover {
-  background-color: #ffffff;
-  transform: scale(1.002);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-  position: relative;
-  z-index: 10;
-}
-
-.table-premium tbody td {
-  border-bottom: 1px solid #f1f5f9;
-  padding: 1rem 1.5rem;
-  color: #475569;
-  font-weight: 500;
-  font-size: 0.875rem;
-}
-
-/* Premium Input */
-.input-premium {
-  background-color: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  transition: all 0.2s ease-in-out;
-  font-size: 0.875rem;
-  line-height: unknown;
-}
-
-.input-premium:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  outline: none;
-}
+/* Vercel Force Update */
